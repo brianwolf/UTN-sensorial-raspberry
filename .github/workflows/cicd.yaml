@@ -27,7 +27,7 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
         registry: docker.io
         buildArgs: 
-          - ARG_VERSION=${{ steps.version.outputs.sha_short }}
+        - ARG_VERSION: ${{ steps.version.outputs.sha_short }}
     
     - name: tag
       uses: anothrNick/github-tag-action@1.26.0

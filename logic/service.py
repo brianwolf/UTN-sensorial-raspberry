@@ -3,6 +3,9 @@ import time
 from datetime import datetime
 from typing import List
 
+import requests
+from flask.json import jsonify
+
 import logic.config as config
 import logic.repository as repo
 import logic.vars as vars
@@ -24,11 +27,27 @@ def get_all_metrics() -> List[Metric]:
 
 
 def send_metrics_to_backend(ms: List[Metric]):
-    TODO: 'hacer el post'
+
+    data = [
+        {
+            'uuid': str(m.uuid),
+            'sensor_type': str(m.sensor_type),
+            'value': str(m.value),
+            'raspberry_uuid': str(m.raspberry_uuid),
+            'creation_date': m.creation_date.isoformat()
+        }
+        for m in ms
+    ]
+
+    with config._APP.app_context():
+        config.logger().info(f'Sending -> {len(data)} mectrics')
+        r = requests.post(url=vars.SEND_BACKEND_URL, json=data)
+        config.logger().info(
+            f'Response -> status: {r.status_code}, body: {r.text}')
 
 
 def delete_metrics(creation_dates: List[datetime]):
-    TODO: 'hacer el delete'
+    repo.delete_metrics(creation_dates)
 
 
 def _send_metrics_to_backend():
@@ -54,12 +73,11 @@ def _send_metrics_to_backend():
             except Exception as e:
                 config.logger().warning(
                     f'Thread -> Error on send to backend -> try: {tries}, error: {e.args}')
-                tries += 1
                 error = e
 
         if error:
             config.logger().exception(error)
-            TODO: 'Thread -> no hay internet, guardar menos informacion por un tiempo'
+            # TODO: Thread -> no hay internet, guardar menos informacion por un tiempo
 
         time.sleep(vars.SEND_BACKEND_SECONDS)
 

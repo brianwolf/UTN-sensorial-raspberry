@@ -15,6 +15,8 @@ FLASK_HOST = os.environ.get('FLASK_HOST', 'localhost')
 SQLITE_PATH = os.environ.get(
     'SQLITE_PATH', f'{Path.home()}/.sensorial/db/sqlite.db')
 
-SEND_BACKEND_SECONDS = int(os.environ.get('SEND_BACKEND_SECONDS', 2))
-SEND_BACKEND_MAX_METRICS = int(os.environ.get('SEND_BACKEND_MAX_METRICS', 100))
+SEND_BACKEND_SECONDS = int(os.environ.get('SEND_BACKEND_SECONDS', 15))
+SEND_BACKEND_MAX_METRICS = int(os.environ.get('SEND_BACKEND_MAX_METRICS', 25))
 SEND_BACKEND_TRIES = int(os.environ.get('SEND_BACKEND_TRIES', 3))
+SEND_BACKEND_URL = os.environ.get(
+    'SEND_BACKEND_URL', f'http://{FLASK_HOST}:{FLASK_PORT}/api/v1/mocks/backend/metrics')

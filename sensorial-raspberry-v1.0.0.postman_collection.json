@@ -6,6 +6,45 @@
 	},
 	"item": [
 		{
+			"name": "app",
+			"item": [
+				{
+					"name": "alive",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postman collection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/postman",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"postman"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "metrics",
 			"item": [
 				{
@@ -104,21 +143,35 @@
 			]
 		},
 		{
-			"name": "alive",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						""
-					]
+			"name": "sensors",
+			"item": [
+				{
+					"name": "get uuid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/sensors/uuid?mac=1c:1b:0d:c1:05:ea",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sensors",
+								"uuid"
+							],
+							"query": [
+								{
+									"key": "mac",
+									"value": "1c:1b:0d:c1:05:ea"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [

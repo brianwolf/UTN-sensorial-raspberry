@@ -11,6 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: create-version
+      id: create-version
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: show-version
       run: echo "Version to build -> ${{ steps.create-version.outputs.sha_short }}"
@@ -25,11 +26,11 @@ jobs:
       uses: mr-smithers-excellent/docker-build-push@v5
       with:
         image: brianwolf94/sensorial-raspberry
-        tags: ${{ steps.version.outputs.sha_short }}
+        tags: ${{ needs.get-version.outputs.sha_short }}, latest
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
         registry: docker.io
-        buildArgs: ARG_VERSION=${{ steps.version.outputs.sha_short }}
+        buildArgs: ARG_VERSION=${{ needs.get-version.outputs.sha_short }}
   
   tag-repository:
     needs: build-and-push

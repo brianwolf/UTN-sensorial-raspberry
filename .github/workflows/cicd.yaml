@@ -1,5 +1,4 @@
 name: build-push
-description: Crea una imagen de docker y la sube a dockerhub 
 
 on:
   push:
@@ -44,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@2
-    - uses: anothrNick/github-tag-action@1.17.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: false
-          CUSTOM_TAG: ${{ needs.get-version.outputs.sha_short }}
+    - uses: anothrNick/github-tag-action@1.26.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: false
+        CUSTOM_TAG: ${{ needs.get-version.outputs.sha_short }}

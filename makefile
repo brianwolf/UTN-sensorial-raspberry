@@ -4,7 +4,7 @@ DB_FILE_PATH ?= ~/.sensorial/db/sqlite.db
 
 .SILENT:
 
-logs-tail lt:
+logs-tail l:
 	tail -f $(LOG_FILE_PATH)
 
 
@@ -25,5 +25,5 @@ docker-build:
 	docker build . -t brianwolf94/sensorial-raspberry:${VERSION} --build-arg ARG_VERSION=${VERSION} 
 
 
-# remover todas las imagenes
-# docker images | grep chainz | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi erangaeb/chainz:{}
+python-env pye:
+	virtualenv -p python3.9 env

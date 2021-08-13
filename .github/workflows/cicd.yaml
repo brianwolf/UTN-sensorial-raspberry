@@ -33,13 +33,15 @@ jobs:
         registry: docker.io
         buildArgs: ARG_VERSION=${{ needs.get-version.outputs.version }}
   
-  tag-repository:
+  tag-branch:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: anothrNick/github-tag-action@1.26.0
+    - name: tag
+      id: tag
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: false
-        CUSTOM_TAG: ${{ needs.get-version.outputs.version }}
+      with:
+        tag_name: ${{ needs.get-version.outputs.version }}

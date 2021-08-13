@@ -22,7 +22,7 @@ db-size dbs:
 
 
 docker-build:
-	docker build . -t sensorial-receiver:${VERSION} --build-arg ARG_VERSION=${VERSION} 
+	docker build . -t sensorial-raspberry:${VERSION} --build-arg ARG_VERSION=${VERSION} 
 
 
 # remover todas las imagenes

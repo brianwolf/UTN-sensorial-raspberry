@@ -1,0 +1,50 @@
+name: build-push
+description: Crea una imagen de docker y la sube a dockerhub 
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+
+  get-version:
+    name: Obtiene la version a generar
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@2
+    - name: Load version
+      id: version
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+    - name: Show version
+      run: echo "Version to build -> ${{ steps.version.outputs.sha_short }}"
+    outputs:
+      sha_short: ${{ steps.version.outputs.sha_short }}
+  
+  build-and-push:
+    name: Construye y sube la imagen a dockerhub con el commit sha corto
+    needs: get-version
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@2
+    - name: build and push to docker
+      uses: docker/build-push-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: sensorial-raspberry
+        tag_with_ref: true
+        tag_with_sha: false
+        tags: ${{ needs.get-version.outputs.sha_short }}
+        build-args: |
+          ARG_VERSION=${{ needs.get-version.outputs.sha_short }}
+  
+  tag-repository:
+    name: Crea el tag en github 
+    needs: get-version
+    runs-on: ubuntu-latest
+    - uses: actions/checkout@2
+    - uses: anothrNick/github-tag-action@1.17.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          CUSTOM_TAG: ${{ needs.get-version.outputs.sha_short }}

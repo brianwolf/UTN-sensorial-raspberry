@@ -32,6 +32,8 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
         registry: docker.io
         buildArgs: ARG_VERSION=${{ needs.get-version.outputs.version }}
+    outputs:
+      version: ${{ needs.get-version.outputs.version }}
   
   tag-branch:
     needs: build-and-push
@@ -44,4 +46,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ needs.get-version.outputs.version }}
+        tag_name: ${{ needs.build-and-push.outputs.version }}

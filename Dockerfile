@@ -4,7 +4,7 @@ ARG ARG_VERSION=local
 
 ENV VERSION=${ARG_VERSION}
 
-WORKDIR /home/sensorial
+WORKDIR /home/utn/sensorial
 
 COPY . .
 

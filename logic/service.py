@@ -1,11 +1,11 @@
-import os
 import threading
 import time
+from datetime import datetime
 from typing import List
-from uuid import UUID
 
 import logic.config as config
 import logic.repository as repo
+import logic.vars as vars
 from logic.model import Metric
 
 _THREAD_RUNNING = False
@@ -27,7 +27,7 @@ def send_metrics_to_backend(ms: List[Metric]):
     TODO: 'hacer el post'
 
 
-def delete_metrics_from_db(ms: List[Metric]):
+def delete_metrics(creation_dates: List[datetime]):
     TODO: 'hacer el delete'
 
 
@@ -37,18 +37,18 @@ def _send_metrics_to_backend():
 
     while _THREAD_RUNNING:
 
-        ms = get_metrics(config.SEND_BACKEND_MAX_METRICS)
+        ms = get_metrics(vars.SEND_BACKEND_MAX_METRICS)
         tries = 0
         error = None
 
-        while ms and tries < config.SEND_BACKEND_TRIES:
+        while ms and tries < vars.SEND_BACKEND_TRIES:
             try:
                 tries += 1
                 config.logger().info(
                     f'Thread -> Ready to send {len(ms)} metrics in trie {tries}')
 
                 send_metrics_to_backend(ms)
-                delete_metrics_from_db(ms)
+                delete_metrics([m.creation_date for m in ms])
                 break
 
             except Exception as e:
@@ -61,7 +61,7 @@ def _send_metrics_to_backend():
             config.logger().exception(error)
             TODO: 'Thread -> no hay internet, guardar menos informacion por un tiempo'
 
-        time.sleep(config.SEND_BACKEND_MINUTES * 60)
+        time.sleep(vars.SEND_BACKEND_SECONDS)
 
 
 def start_thread_send_backend():

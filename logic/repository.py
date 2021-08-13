@@ -59,3 +59,23 @@ def get_all_metrics() -> List[Metric]:
         )
         for r in result
     ]
+
+
+def delete_metrics(creation_dates: List[datetime]):
+
+    if not creation_dates:
+        return
+
+    query_uuids = ''
+    for d in creation_dates:
+        query_uuids += d + ','
+    query_uuids = query_uuids[0:-2]
+
+    query = f'''
+        DELETE * FROM {_TABLE}
+        WHERE CREATION_DATE in (?);
+    '''
+
+    params = [query_uuids]
+
+    sqlite.exec(query=query, params=params)

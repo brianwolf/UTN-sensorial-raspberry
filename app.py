@@ -6,7 +6,8 @@ from flask import Flask, send_file
 
 import logic.config as config
 import logic.service as service
-import setup
+import logic.setup as setup
+import logic.vars as vars
 
 setup.prepare_deploy()
 
@@ -17,8 +18,7 @@ config.config_flask_app(app)
 @app.route('/')
 def alive():
 
-    version = os.getenv('VERSION', 'LOCAL')
-    msj = f'Version: {version}'
+    msj = f'Version: {vars.VERSION}'
 
     config.logger().info(msj)
     return msj, 200
@@ -38,6 +38,7 @@ def download_postman_collection():
                      mimetype='application/octet-stream',
                      as_attachment=True,
                      attachment_filename=ntpath.basename(collection_dir))
+
 
 service.start_thread_send_backend()
 

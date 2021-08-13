@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, request
 
 import logic.service as service
 from logic.model import Metric

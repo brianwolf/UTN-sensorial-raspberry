@@ -1,4 +1,3 @@
-import logic.config as config
 import logic.repository as repo
 import logic.sqlite as sqlite
 

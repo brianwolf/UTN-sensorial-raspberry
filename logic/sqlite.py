@@ -2,7 +2,7 @@ import os
 import sqlite3
 from typing import List
 
-import logic.config as config
+import logic.vars as vars
 
 
 def select(query: str, params: List[any] = []) -> List[any]:
@@ -71,11 +71,11 @@ def _dict_factory(cursor, row):
 
 def _get_connection() -> sqlite3.Connection:
 
-    if not os.path.exists(config.SQLITE_PATH):
-        directory = os.path.dirname(config.SQLITE_PATH)
+    if not os.path.exists(vars.SQLITE_PATH):
+        directory = os.path.dirname(vars.SQLITE_PATH)
         os.makedirs(directory, exist_ok=True)
 
-    con = sqlite3.connect(config.SQLITE_PATH, check_same_thread=True)
+    con = sqlite3.connect(vars.SQLITE_PATH, check_same_thread=True)
     con.row_factory = _dict_factory
 
     return con

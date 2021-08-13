@@ -1,11 +1,12 @@
 from uuid import UUID, uuid4
 
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, request
 
+import logic.config as config
 import logic.service as service
 from logic.model import Metric
 
-blue_print = Blueprint('receiver', __name__, url_prefix='/api/v1')
+blue_print = Blueprint('controller', __name__, url_prefix='/api/v1')
 
 
 @blue_print.route('/sensors/uuid', methods=['GET'])
@@ -42,6 +43,7 @@ def get_all_metrics():
             'uuid': str(m.uuid),
             'sensor_type': str(m.sensor_type),
             'value': str(m.value),
+            'raspberry_uuid': str(m.raspberry_uuid),
             'creation_date': m.creation_date.isoformat()
         }
         for m in service.get_all_metrics()
@@ -62,3 +64,10 @@ def thread_stop():
 
     service.stop_thread_send_backend()
     return jsonify({'running': False}), 200
+
+
+@blue_print.route('/mocks/backend/metrics', methods=['POST'])
+def mock_backend_metrics():
+
+    config.logger().info(f'Receive body -> {request.json}')
+    return '', 201

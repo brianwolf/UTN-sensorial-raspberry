@@ -1,6 +1,6 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 import logic.config as config
 
@@ -8,10 +8,11 @@ import logic.config as config
 @dataclass
 class Metric(object):
 
+    creation_date: datetime
     uuid: UUID
     sensor_type: str
+    raspberry_uuid: UUID
     value: float
-    creation_date: datetime
 
     def __init__(self, uuid: UUID, sensor_type: str, value: float, creation_date: datetime = None, raspberry_uuid: UUID = None):
         self.uuid = uuid

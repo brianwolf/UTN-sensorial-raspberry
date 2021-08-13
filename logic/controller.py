@@ -8,6 +8,15 @@ from logic.model import Metric
 blue_print = Blueprint('receiver', __name__, url_prefix='/api/v1')
 
 
+@blue_print.route('/sensors/uuid', methods=['GET'])
+def get_sensor_id():
+
+    mac = request.args.get('mac', 'asd')
+    uuid = uuid4()
+
+    return jsonify({'uuid': str(uuid)}), 200
+
+
 @blue_print.route('/metrics', methods=['POST'])
 def add_metric():
 

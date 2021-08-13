@@ -22,6 +22,7 @@ jobs:
     needs: get-version
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: build-and-push
       uses: mr-smithers-excellent/docker-build-push@v5
       with:

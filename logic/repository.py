@@ -11,15 +11,16 @@ _TABLE = 'METRIC'
 def save_metric(m: Metric) -> Metric:
 
     query = f'''
-        INSERT INTO {_TABLE} (CREATION_DATE, UUID, SENSOR_TYPE, RASPBERRY_UUID, VALUE)
-        VALUES (?,?,?,?,?);
+        INSERT INTO {_TABLE} (CREATION_DATE, MAC, SENSOR_TYPE, RASPBERRY_UUID, VALUE, UNIT)
+        VALUES (?,?,?,?,?,?);
     '''
     params = [
         m.creation_date,
-        str(m.uuid),
+        m.mac,
         m.sensor_type,
         str(m.raspberry_uuid),
-        m.value
+        m.value,
+        m.unit
     ]
 
     sqlite.exec(query=query, params=params)
@@ -56,14 +57,14 @@ def delete_metrics(creation_dates: List[datetime]):
     if not creation_dates:
         return
 
-    query_uuids = ''
+    query_dates = ''
     for d in creation_dates:
-        query_uuids += f'\'{d}\','
-    query_uuids = query_uuids[0:-1]
+        query_dates += f'\'{d}\','
+    query_dates = query_dates[0:-1]
 
     query = f'''
         DELETE FROM {_TABLE}
-        WHERE CREATION_DATE in ({query_uuids});
+        WHERE CREATION_DATE in ({query_dates});
     '''
 
     sqlite.exec(query=query)
@@ -73,10 +74,11 @@ def _to_metrics(result: List) -> List[Metric]:
     return [
         Metric(
             creation_date=datetime.fromisoformat(r.get('CREATION_DATE')),
-            uuid=UUID(r.get('UUID')),
+            mac=r.get('MAC'),
             sensor_type=r.get('SENSOR_TYPE'),
             raspberry_uuid=UUID(r.get('RASPBERRY_UUID')),
-            value=r.get('VALUE')
+            value=r.get('VALUE'),
+            unit=r.get('UNIT')
         )
         for r in result
     ]

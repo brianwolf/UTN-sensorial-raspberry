@@ -30,9 +30,10 @@ def send_metrics_to_backend(ms: List[Metric]):
 
     data = [
         {
-            'uuid': str(m.uuid),
+            'mac': m.mac,
             'sensor_type': str(m.sensor_type),
             'value': str(m.value),
+            'unit': m.unit,
             'raspberry_uuid': str(m.raspberry_uuid),
             'creation_date': m.creation_date.isoformat()
         }
@@ -43,7 +44,7 @@ def send_metrics_to_backend(ms: List[Metric]):
         config.logger().info(f'Sending -> {len(data)} mectrics')
         r = requests.post(url=vars.SEND_BACKEND_URL, json=data)
         config.logger().info(
-            f'Response -> status: {r.status_code}, body: {r.text}')
+            f'Response -> status: {r.status_code}')
 
 
 def delete_metrics(creation_dates: List[datetime]):

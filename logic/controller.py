@@ -9,23 +9,15 @@ from logic.model import Metric
 blue_print = Blueprint('controller', __name__, url_prefix='/api/v1')
 
 
-@blue_print.route('/sensors/uuid', methods=['GET'])
-def get_sensor_id():
-
-    mac = request.args.get('mac', 'asd')
-    uuid = uuid4()
-
-    return jsonify({'uuid': str(uuid)}), 200
-
-
 @blue_print.route('/metrics', methods=['POST'])
 def add_metric():
 
-    body = request.json
+    j = request.json
     m = Metric(
-        uuid=UUID(body['uuid']),
-        sensor_type=body['sensor_type'],
-        value=body['value']
+        mac=j['mac'],
+        sensor_type=j['sensor_type'],
+        value=j['value'],
+        unit=j['unit']
     )
 
     service.add_metric(m)
@@ -40,9 +32,10 @@ def get_all_metrics():
 
     result = [
         {
-            'uuid': str(m.uuid),
+            'mac': m.mac,
             'sensor_type': str(m.sensor_type),
             'value': str(m.value),
+            'unit': m.unit,
             'raspberry_uuid': str(m.raspberry_uuid),
             'creation_date': m.creation_date.isoformat()
         }

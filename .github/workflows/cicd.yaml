@@ -18,6 +18,7 @@ jobs:
     outputs:
       version: ${{ steps.create-version.outputs.version }}
   
+
   build-and-push:
     needs: get-version
     runs-on: ubuntu-latest
@@ -35,6 +36,7 @@ jobs:
     outputs:
       version: ${{ needs.get-version.outputs.version }}
   
+
   tag-branch:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -47,6 +49,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ needs.build-and-push.outputs.version }}
+    outputs:
+      version: ${{ needs.build-and-push.outputs.version }}
 
 
   deploy-heroku:

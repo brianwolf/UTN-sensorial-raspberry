@@ -60,13 +60,15 @@ jobs:
     - uses: actions/checkout@v2
     - name: generate-heroku-dockerfile
       run: |
+        mkdir heroku
+        cd heroku
         > Dockerfile
         echo "FROM ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:${{ needs.tag-branch.outputs.version }}" >> Dockerfile
         echo "ENV VERSION=${{ needs.tag-branch.outputs.version }}" >> Dockerfile
         echo "ENV SEND_BACKEND_URL=${{ secrets.SEND_BACKEND_URL }}" >> Dockerfile
         echo "ENV SEND_BACKEND_SECONDS=${{ secrets.SEND_BACKEND_SECONDS }}" >> Dockerfile
         echo "ENV SEND_BACKEND_MAX_METRICS=${{ secrets.SEND_BACKEND_MAX_METRICS }}" >> Dockerfile
-        echo "ENV FLASK_PORT=\$PORT >> Dockerfile
+        echo "ENV FLASK_PORT=\$PORT" >> Dockerfile
         echo "CMD gunicorn -b 0.0.0.0:\$PORT --reload app:app" >> Dockerfile
         cat Dockerfile
     - uses: akhileshns/heroku-deploy@v3.12.12 
@@ -75,3 +77,4 @@ jobs:
         heroku_app_name: ${{ secrets.HEROKU_APP }}
         heroku_email: ${{ secrets.HEROKU_EMAIL }}
         usedocker: true
+        appdir: heroku

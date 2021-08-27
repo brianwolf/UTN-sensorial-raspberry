@@ -64,9 +64,6 @@ jobs:
         cd heroku
         > Dockerfile
         echo "FROM ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:${{ needs.tag-branch.outputs.version }}" >> Dockerfile
-        echo "ENV SEND_BACKEND_URL=${{ secrets.SEND_BACKEND_URL }}" >> Dockerfile
-        echo "ENV SEND_BACKEND_SECONDS=${{ secrets.SEND_BACKEND_SECONDS }}" >> Dockerfile
-        echo "ENV SEND_BACKEND_MAX_METRICS=${{ secrets.SEND_BACKEND_MAX_METRICS }}" >> Dockerfile
         echo "CMD gunicorn -b 0.0.0.0:\$PORT --reload app:app" >> Dockerfile
         cat Dockerfile
     - uses: gonuit/heroku-docker-deploy@v1.3.3

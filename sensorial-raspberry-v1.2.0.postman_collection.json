@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "18c6461e-78cd-47d3-b3b0-ead376d0491b",
-		"name": "sensorial-raspberry-v1.1.0",
+		"_postman_id": "a133530b-32f4-462c-8a18-30f359bc3f85",
+		"name": "sensorial-raspberry-v1.2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -37,6 +37,49 @@
 							],
 							"path": [
 								"postman"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vars",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vars",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vars Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SEND_BACKEND_MAX_METRICS\": 20,\n    \"SEND_BACKEND_TRIES\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/vars",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vars"
 							]
 						}
 					},

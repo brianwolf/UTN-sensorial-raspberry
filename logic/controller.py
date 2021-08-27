@@ -1,10 +1,9 @@
-from uuid import UUID, uuid4
-
 from flask import Blueprint, jsonify, request
 
 import logic.config as config
 import logic.service as service
 from logic.model import Metric
+
 
 blue_print = Blueprint('controller', __name__, url_prefix='/api/v1')
 
@@ -27,8 +26,6 @@ def add_metric():
 
 @blue_print.route('/metrics/all', methods=['GET'])
 def get_all_metrics():
-
-    asd = service.get_all_metrics()
 
     result = [
         {

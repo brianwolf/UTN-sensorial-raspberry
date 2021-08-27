@@ -4,12 +4,11 @@ from datetime import datetime
 from typing import List
 
 import requests
-from flask.json import jsonify
 
 import logic.config as config
 import logic.repository as repo
-import logic.vars as vars
 from logic.model import Metric
+from logic.vars import Vars, get
 
 _THREAD_RUNNING = False
 
@@ -42,7 +41,7 @@ def send_metrics_to_backend(ms: List[Metric]):
 
     with config._APP.app_context():
         config.logger().info(f'Sending -> {len(data)} mectrics')
-        r = requests.post(url=vars.SEND_BACKEND_URL, json=data)
+        r = requests.post(url=get(Vars.SEND_BACKEND_URL), json=data)
         config.logger().info(
             f'Response -> status: {r.status_code}')
 
@@ -57,15 +56,18 @@ def _send_metrics_to_backend():
 
     while _THREAD_RUNNING:
 
-        ms = get_metrics(vars.SEND_BACKEND_MAX_METRICS)
+        ms = get_metrics(int(get(Vars.SEND_BACKEND_MAX_METRICS)))
         tries = 0
         error = None
 
-        while ms and tries < vars.SEND_BACKEND_TRIES:
+        if not ms:
+            config.logger().info('Thread -> nothing metrics to send')
+
+        while ms and tries < int(get(Vars.SEND_BACKEND_TRIES)):
             try:
                 tries += 1
                 config.logger().info(
-                    f'Thread -> Ready to send {len(ms)} metrics in trie {tries}')
+                    f'Thread -> Ready to send {len(ms)} metrics on try {tries}')
 
                 send_metrics_to_backend(ms)
                 delete_metrics([m.creation_date for m in ms])
@@ -80,7 +82,7 @@ def _send_metrics_to_backend():
             config.logger().exception(error)
             # TODO: Thread -> no hay internet, guardar menos informacion por un tiempo
 
-        time.sleep(vars.SEND_BACKEND_SECONDS)
+        time.sleep(int(get(Vars.SEND_BACKEND_SECONDS)))
 
 
 def start_thread_send_backend():

@@ -6,7 +6,7 @@ from uuid import UUID
 from flask import Blueprint, jsonify
 from werkzeug.exceptions import HTTPException
 
-import logic.vars as vars
+from logic.vars import Vars, get
 from logic.controller import blue_print as controller_blue_print
 
 _LOGGER: logging.Logger = None
@@ -35,8 +35,8 @@ def config_flask_app(app):
 
 def logger() -> logging.Logger:
 
-    if not os.path.exists(vars.LOG_DIR):
-        os.makedirs(vars.LOG_DIR, exist_ok=True)
+    if not os.path.exists(get(Vars.LOG_DIR)):
+        os.makedirs(get(Vars.LOG_DIR), exist_ok=True)
 
     global _LOGGER
 
@@ -47,16 +47,16 @@ def logger() -> logging.Logger:
         '%(asctime)s - %(name)s (%(process)d) - %(levelname)s - %(message)s')
 
     rotating = RotatingFileHandler(
-        f'{vars.LOG_DIR}/app.log', maxBytes=vars.LOG_MAX_KB * 1000, backupCount=vars.LOG_BACKUP_COUNT)
-    rotating.setLevel(vars.LOG_LEVEL)
+        f'{get(Vars.LOG_DIR)}/app.log', maxBytes=int(get(Vars.LOG_MAX_KB)) * 1000, backupCount=int(get(Vars.LOG_BACKUP_COUNT)))
+    rotating.setLevel(get(Vars.LOG_LEVEL))
     rotating.setFormatter(formatter)
 
     sh = logging.StreamHandler()
-    sh.setLevel(vars.LOG_LEVEL)
+    sh.setLevel(get(Vars.LOG_LEVEL))
     sh.setFormatter(formatter)
 
     _LOGGER = logging.getLogger("app")
-    _LOGGER.setLevel(vars.LOG_LEVEL)
+    _LOGGER.setLevel(get(Vars.LOG_LEVEL))
     _LOGGER.addHandler(rotating)
     _LOGGER.addHandler(sh)
 

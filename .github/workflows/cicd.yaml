@@ -6,55 +6,80 @@ on:
 
 jobs:
 
-  get-version:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: create-version
-      id: create-version
-      run: echo "::set-output name=version::$(date +%Y%m%d%H%M)"
-    - name: show-version
-      run: echo "Version to build -> ${{ steps.create-version.outputs.version }}"
-    outputs:
-      version: ${{ steps.create-version.outputs.version }}
+  # get-version:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: create-version
+  #     id: create-version
+  #     run: echo "::set-output name=version::$(date +%Y%m%d%H%M)"
+  #   - name: show-version
+  #     run: echo "Version to build -> ${{ steps.create-version.outputs.version }}"
+  #   outputs:
+  #     version: ${{ steps.create-version.outputs.version }}
   
 
-  build-and-push:
-    needs: get-version
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: build-and-push
-      uses: mr-smithers-excellent/docker-build-push@v5
-      with:
-        image: ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry
-        tags: ${{ needs.get-version.outputs.version }}, latest
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-        registry: docker.io
-        buildArgs: ARG_VERSION=${{ needs.get-version.outputs.version }}
-    outputs:
-      version: ${{ needs.get-version.outputs.version }}
+  # build-and-push:
+  #   needs: get-version
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: build-and-push
+  #     uses: mr-smithers-excellent/docker-build-push@v5
+  #     with:
+  #       image: ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry
+  #       tags: ${{ needs.get-version.outputs.version }}, latest
+  #       username: ${{ secrets.DOCKER_USERNAME }}
+  #       password: ${{ secrets.DOCKER_TOKEN }}
+  #       registry: docker.io
+  #       buildArgs: ARG_VERSION=${{ needs.get-version.outputs.version }}
+  #   outputs:
+  #     version: ${{ needs.get-version.outputs.version }}
   
 
-  tag-branch:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: tag
-      id: tag
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ needs.build-and-push.outputs.version }}
-    outputs:
-      version: ${{ needs.build-and-push.outputs.version }}
+  # tag-branch:
+  #   needs: build-and-push
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: tag
+  #     id: tag
+  #     uses: actions/create-release@v1
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     with:
+  #       tag_name: ${{ needs.build-and-push.outputs.version }}
+  #   outputs:
+  #     version: ${{ needs.build-and-push.outputs.version }}
 
+
+  # deploy-heroku:
+  #   needs: tag-branch
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: generate-heroku-dockerfile
+  #     run: |
+  #       mkdir heroku
+  #       cd heroku
+  #       > Dockerfile
+  #       echo "FROM ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:${{ needs.tag-branch.outputs.version }}" >> Dockerfile
+  #       echo "ENV VERSION=${{ needs.tag-branch.outputs.version }}" >> Dockerfile
+  #       echo "ENV SEND_BACKEND_URL=${{ secrets.SEND_BACKEND_URL }}" >> Dockerfile
+  #       echo "ENV SEND_BACKEND_SECONDS=${{ secrets.SEND_BACKEND_SECONDS }}" >> Dockerfile
+  #       echo "ENV SEND_BACKEND_MAX_METRICS=${{ secrets.SEND_BACKEND_MAX_METRICS }}" >> Dockerfile
+  #       echo "ENV FLASK_PORT=\$PORT" >> Dockerfile
+  #       echo "CMD gunicorn -b 0.0.0.0:\$PORT --reload app:app" >> Dockerfile
+  #       cat Dockerfile
+  #   - uses: akhileshns/heroku-deploy@v3.12.12 
+  #     with:
+  #       heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+  #       heroku_app_name: ${{ secrets.HEROKU_APP }}
+  #       heroku_email: ${{ secrets.HEROKU_EMAIL }}
+  #       usedocker: true
+  #       appdir: heroku
 
   deploy-heroku:
-    needs: tag-branch
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -63,18 +88,17 @@ jobs:
         mkdir heroku
         cd heroku
         > Dockerfile
-        echo "FROM ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:${{ needs.tag-branch.outputs.version }}" >> Dockerfile
-        echo "ENV VERSION=${{ needs.tag-branch.outputs.version }}" >> Dockerfile
+        echo "FROM ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:202108271517" >> Dockerfile
+        echo "ENV VERSION=202108271517" >> Dockerfile
         echo "ENV SEND_BACKEND_URL=${{ secrets.SEND_BACKEND_URL }}" >> Dockerfile
         echo "ENV SEND_BACKEND_SECONDS=${{ secrets.SEND_BACKEND_SECONDS }}" >> Dockerfile
         echo "ENV SEND_BACKEND_MAX_METRICS=${{ secrets.SEND_BACKEND_MAX_METRICS }}" >> Dockerfile
         echo "ENV FLASK_PORT=\$PORT" >> Dockerfile
-        echo "CMD gunicorn -b 0.0.0.0:\$PORT --reload app:app" >> Dockerfile
+        echo "CMD gunicorn -b 0.0.0.0:\$PORT app:app" >> Dockerfile
         cat Dockerfile
-    - uses: akhileshns/heroku-deploy@v3.12.12 
+    - uses: gonuit/heroku-docker-deploy@v1.3.3
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
         heroku_app_name: ${{ secrets.HEROKU_APP }}
-        heroku_email: ${{ secrets.HEROKU_EMAIL }}
-        usedocker: true
-        appdir: heroku
+        email: ${{ secrets.HEROKU_EMAIL }}
+        dockerfile_directory: ./heroku

@@ -18,6 +18,7 @@ jobs:
     outputs:
       version: ${{ steps.create-version.outputs.version }}
   
+
   build-and-push:
     needs: get-version
     runs-on: ubuntu-latest
@@ -35,6 +36,7 @@ jobs:
     outputs:
       version: ${{ needs.get-version.outputs.version }}
   
+
   tag-branch:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -47,6 +49,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ needs.build-and-push.outputs.version }}
+    outputs:
+      version: ${{ needs.build-and-push.outputs.version }}
 
 
   deploy-heroku:
@@ -56,18 +60,18 @@ jobs:
     - uses: actions/checkout@v2
     - name: generate-heroku-dockerfile
       run: |
+        mkdir heroku
+        cd heroku
         > Dockerfile
         echo "FROM ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:${{ needs.tag-branch.outputs.version }}" >> Dockerfile
-        echo "ENV VERSION=${{ needs.tag-branch.outputs.version }}" >> Dockerfile
         echo "ENV SEND_BACKEND_URL=${{ secrets.SEND_BACKEND_URL }}" >> Dockerfile
         echo "ENV SEND_BACKEND_SECONDS=${{ secrets.SEND_BACKEND_SECONDS }}" >> Dockerfile
         echo "ENV SEND_BACKEND_MAX_METRICS=${{ secrets.SEND_BACKEND_MAX_METRICS }}" >> Dockerfile
-        echo "ENV FLASK_PORT=\$PORT >> Dockerfile
         echo "CMD gunicorn -b 0.0.0.0:\$PORT --reload app:app" >> Dockerfile
         cat Dockerfile
-    - uses: akhileshns/heroku-deploy@v3.12.12 
+    - uses: gonuit/heroku-docker-deploy@v1.3.3
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
         heroku_app_name: ${{ secrets.HEROKU_APP }}
-        heroku_email: ${{ secrets.HEROKU_EMAIL }}
-        usedocker: true
+        email: ${{ secrets.HEROKU_EMAIL }}
+        dockerfile_directory: ./heroku

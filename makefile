@@ -1,4 +1,5 @@
 VERSION ?= local
+DOCKER_USER ?= utnsensorial
 LOG_FILE_PATH ?= ~/.sensorial/logs/app.log
 DB_FILE_PATH ?= ~/.sensorial/db/sqlite.db
 
@@ -22,7 +23,10 @@ db-size dbs:
 
 
 docker-build:
-	docker build . -t brianwolf94/sensorial-raspberry:${VERSION} --build-arg ARG_VERSION=${VERSION} 
+	docker build . -t ${DOCKER_USER}/sensorial-raspberry:${VERSION} --build-arg ARG_VERSION=${VERSION} 
+
+docker-run:
+	docker run -it --rm -p 80:80 ${DOCKER_USER}/sensorial-raspberry:${VERSION}
 
 
 python-env pye:

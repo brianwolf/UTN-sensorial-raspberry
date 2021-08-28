@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "a133530b-32f4-462c-8a18-30f359bc3f85",
-		"name": "sensorial-raspberry-v1.2.0",
+		"_postman_id": "0a5bf721-e172-47b1-91aa-5072189366ac",
+		"name": "sensorial-raspberry-v1.3.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -14,9 +14,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/",
+							"raw": "{{url-sensorial-raspberry}}/",
 							"host": [
-								"{{url}}"
+								"{{url-sensorial-raspberry}}"
 							],
 							"path": [
 								""
@@ -31,9 +31,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/postman",
+							"raw": "{{url-sensorial-raspberry}}/postman",
 							"host": [
-								"{{url}}"
+								"{{url-sensorial-raspberry}}"
 							],
 							"path": [
 								"postman"
@@ -48,9 +48,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/vars",
+							"raw": "{{url-sensorial-raspberry}}/vars",
 							"host": [
-								"{{url}}"
+								"{{url-sensorial-raspberry}}"
 							],
 							"path": [
 								"vars"
@@ -74,9 +74,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/vars",
+							"raw": "{{url-sensorial-raspberry}}/vars",
 							"host": [
-								"{{url}}"
+								"{{url-sensorial-raspberry}}"
 							],
 							"path": [
 								"vars"
@@ -96,9 +96,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/v1/metrics/all",
+							"raw": "{{url-sensorial-raspberry}}/api/v1/metrics/all",
 							"host": [
-								"{{url}}"
+								"{{url-sensorial-raspberry}}"
 							],
 							"path": [
 								"api",
@@ -125,14 +125,75 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/v1/metrics",
+							"raw": "{{url-sensorial-raspberry}}/api/v1/metrics",
 							"host": [
-								"{{url}}"
+								"{{url-sensorial-raspberry}}"
 							],
 							"path": [
 								"api",
 								"v1",
 								"metrics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "move DB metrics to backend",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-raspberry}}/api/v1/metrics/db/to/backend",
+							"host": [
+								"{{url-sensorial-raspberry}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metrics",
+								"db",
+								"to",
+								"backend"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sent metrics to backend",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"mac\": \"1c:bf:ce:12:5b:ed\",\n        \"sensor_type\": \"PRESION\",\n        \"value\": \"67.25\",\n        \"unit\": \"CELSIUS\",\n        \"raspberry_uuid\": \"a367742e-4121-4365-ad10-863ce98ad4e3\",\n        \"creation_date\": \"2021-08-13T23:23:26.373576\"\n    },\n    {\n        \"mac\": \"1c:bf:ce:12:5b:ed\",\n        \"sensor_type\": \"PRESION\",\n        \"value\": \"67.25\",\n        \"unit\": \"CELSIUS\",\n        \"raspberry_uuid\": \"a367742e-4121-4365-ad10-863ce98ad4e3\",\n        \"creation_date\": \"2021-08-13T23:23:26.922150\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url-sensorial-raspberry}}/api/v1/metrics/to/backend",
+							"host": [
+								"{{url-sensorial-raspberry}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metrics",
+								"to",
+								"backend"
 							]
 						}
 					},
@@ -149,9 +210,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/v1/thread/start",
+							"raw": "{{url-sensorial-raspberry}}/api/v1/thread/start",
 							"host": [
-								"{{url}}"
+								"{{url-sensorial-raspberry}}"
 							],
 							"path": [
 								"api",
@@ -169,9 +230,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/v1/thread/stop",
+							"raw": "{{url-sensorial-raspberry}}/api/v1/thread/stop",
 							"host": [
-								"{{url}}"
+								"{{url-sensorial-raspberry}}"
 							],
 							"path": [
 								"api",
@@ -208,7 +269,7 @@
 	],
 	"variable": [
 		{
-			"key": "url",
+			"key": "url-sensorial-raspberry",
 			"value": "localhost:5000"
 		}
 	]

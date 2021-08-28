@@ -4,7 +4,6 @@ import logic.config as config
 import logic.service as service
 from logic.model import Metric
 
-
 blue_print = Blueprint('controller', __name__, url_prefix='/api/v1')
 
 
@@ -42,6 +41,31 @@ def get_all_metrics():
     return jsonify(result), 200
 
 
+@blue_print.route('/metrics/db/to/backend', methods=['POST'])
+def send_metrics_db_to_backend():
+
+    sent = service.send_db_metrics_to_backend()
+    return jsonify({'sent': sent}), 200
+
+
+@blue_print.route('/metrics/to/backend', methods=['POST'])
+def send_metrics_to_backend():
+
+    req = request.json
+    ms = [
+        Metric(
+            mac=j['mac'],
+            sensor_type=j['sensor_type'],
+            value=j['value'],
+            unit=j['unit']
+        )
+        for j in req
+    ]
+    service.send_metrics_to_backend(ms)
+
+    return '', 201
+
+
 @blue_print.route('/thread/start', methods=['GET'])
 def thread_start():
 
@@ -59,5 +83,5 @@ def thread_stop():
 @blue_print.route('/mocks/backend/metrics', methods=['POST'])
 def mock_backend_metrics():
 
-    config.logger().info(f'Receive body -> {request.json}')
+    config.logger().info(f'Mock receive body -> {request.json}')
     return '', 201

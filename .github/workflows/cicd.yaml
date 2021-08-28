@@ -23,26 +23,6 @@ jobs:
     needs: get-version
     runs-on: ubuntu-latest
     steps:
-    # - uses: actions/checkout@v2
-    # - name: build-and-push
-    #   uses: mr-smithers-excellent/docker-build-push@v5
-    #   with:
-    #     image: brianwolf94/sensorial-raspberry
-    #     tags: ${{ needs.get-version.outputs.version }}, latest
-    #     username: ${{ secrets.DOCKER_USERNAME }}
-    #     password: ${{ secrets.DOCKER_TOKEN }}
-    #     registry: docker.io
-    #     buildArgs: ARG_VERSION=${{ needs.get-version.outputs.version }}
-
-    # - name: build-and-push-many-platforms
-    #   uses: ilteoood/docker_buildx@master
-    #   with:
-    #     publish: true
-    #     imageName: sensorial-raspberry
-    #     dockerUser: ${{ secrets.DOCKER_USERNAME }}
-    #     dockerPassword: ${{ secrets.DOCKER_TOKEN }}
-    #     buildArg: ARG_VERSION=${{ needs.get-version.outputs.version }}
-    #     platform: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
     - name: Check Out Repo 
       uses: actions/checkout@v2
     - name: Login to Docker Hub
@@ -63,7 +43,7 @@ jobs:
         file: ./Dockerfile
         tags: ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:${{ needs.get-version.outputs.version }},${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:latest
         platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-        build-arg: ARG_VERSION=${VERSION}
+        build-args: ARG_VERSION=${{ needs.get-version.outputs.version }}
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
     outputs:

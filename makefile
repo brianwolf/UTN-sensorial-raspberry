@@ -22,11 +22,16 @@ db-size dbs:
 	du -ha $(DB_FILE_PATH)
 
 
-docker-build:
-	docker build . -t ${DOCKER_USER}/sensorial-raspberry:${VERSION} --build-arg ARG_VERSION=${VERSION} 
-
-docker-run:
+docker-run r:
 	docker run -it --rm -p 80:80 ${DOCKER_USER}/sensorial-raspberry:${VERSION}
+
+
+docker-build b:
+	docker build . -t ${DOCKER_USER}/sensorial-raspberry:${VERSION} --build-arg ARG_VERSION=${VERSION}
+
+
+docker-build-arm bx:
+	docker buildx build . -t ${DOCKER_USER}/sensorial-raspberry:${VERSION} --build-arg ARG_VERSION=${VERSION} --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
 
 
 python-env pye:

@@ -64,7 +64,7 @@ jobs:
         context: ./
         file: ./Dockerfile
         tags: ${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:${{ needs.get-version.outputs.version }},${{ secrets.DOCKER_USERNAME }}/sensorial-raspberry:latest
-        platform: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
+        platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
         build-arg: ARG_VERSION=${VERSION}
 
     - name: Image digest

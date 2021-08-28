@@ -50,37 +50,44 @@ def delete_metrics(creation_dates: List[datetime]):
     repo.delete_metrics(creation_dates)
 
 
-def _send_metrics_to_backend():
+def send_db_metrics_to_backend() -> int:
 
-    global _THREAD_RUNNING
+    ms = get_metrics(int(get(Vars.SEND_BACKEND_MAX_METRICS)))
+    if not ms:
+        config.logger().info('There are no metrics to send')
+        return 0
 
-    while _THREAD_RUNNING:
+    tries = 0
+    while tries < int(get(Vars.SEND_BACKEND_TRIES)):
+        try:
+            tries += 1
+            config.logger().info(
+                f'Ready to send {len(ms)} metrics on try {tries}')
 
-        ms = get_metrics(int(get(Vars.SEND_BACKEND_MAX_METRICS)))
-        tries = 0
-        error = None
+            send_metrics_to_backend(ms)
+            delete_metrics([m.creation_date for m in ms])
+            break
 
-        if not ms:
-            config.logger().info('Thread -> nothing metrics to send')
+        except Exception as e:
+            config.logger().warning(
+                f'Error on send to backend -> try: {tries}, error: {e.args}')
 
-        while ms and tries < int(get(Vars.SEND_BACKEND_TRIES)):
-            try:
-                tries += 1
-                config.logger().info(
-                    f'Thread -> Ready to send {len(ms)} metrics on try {tries}')
+            if tries == int(get(Vars.SEND_BACKEND_TRIES)):
+                raise e
 
-                send_metrics_to_backend(ms)
-                delete_metrics([m.creation_date for m in ms])
-                break
+    config.logger().info(
+        f'Were sent to backend {len(ms)} metrics on try {tries}')
+    return len(ms)
 
-            except Exception as e:
-                config.logger().warning(
-                    f'Thread -> Error on send to backend -> try: {tries}, error: {e.args}')
-                error = e
 
-        if error:
-            config.logger().exception(error)
-            # TODO: Thread -> no hay internet, guardar menos informacion por un tiempo
+def _thread_send_metrics_to_backend():
+
+    while thread_can_run():
+        try:
+            send_db_metrics_to_backend()
+
+        except Exception as e:
+            config.logger().exception(e)
 
         time.sleep(int(get(Vars.SEND_BACKEND_SECONDS)))
 
@@ -88,13 +95,17 @@ def _send_metrics_to_backend():
 def start_thread_send_backend():
     global _THREAD_RUNNING
 
-    if _THREAD_RUNNING:
+    if thread_can_run():
         return
 
     _THREAD_RUNNING = True
-    threading.Thread(target=_send_metrics_to_backend).start()
+    threading.Thread(target=_thread_send_metrics_to_backend).start()
 
 
 def stop_thread_send_backend():
     global _THREAD_RUNNING
     _THREAD_RUNNING = False
+
+
+def thread_can_run() -> bool:
+    return _THREAD_RUNNING

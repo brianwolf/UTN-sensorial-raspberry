@@ -60,3 +60,9 @@ Despliegue productivo del proyecto [UTN-sensorial-raspberry-deploy](https://gith
 ## Facultad
 
 ![1](img/utn.jpg)
+
+### Referencias
+
+* [Docker builx QEMU](https://stackoverflow.com/questions/67017795/npm-install-is-failing-with-docker-buildx-linux-arm64)
+* [Git Actions builx](https://www.docker.com/blog/multi-arch-images/)
+* [Git Actions QEMU](https://www.docker.com/blog/multi-arch-images/)

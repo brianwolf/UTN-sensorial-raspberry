@@ -31,7 +31,7 @@ def save_metric(m: Metric) -> Metric:
 def get_metrics(limit: int) -> List[Metric]:
 
     query = f'''
-        SELECT * FROM {_TABLE} LIMIT {limit};
+        SELECT * FROM {_TABLE} ORDER BY CREATION_DATE DESC LIMIT {limit};
     '''
     params = []
 

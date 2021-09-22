@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "0a5bf721-e172-47b1-91aa-5072189366ac",
-		"name": "sensorial-raspberry-v1.3.0",
+		"name": "sensorial-raspberry-v1.4.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -239,6 +239,37 @@
 								"v1",
 								"thread",
 								"stop"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "mocks",
+			"item": [
+				{
+					"name": "metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url-sensorial-raspberry}}/api/v1/mocks/metrics?count=3",
+							"host": [
+								"{{url-sensorial-raspberry}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mocks",
+								"metrics"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "3"
+								}
 							]
 						}
 					},

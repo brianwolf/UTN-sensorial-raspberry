@@ -1,3 +1,5 @@
+import random
+
 from flask import Blueprint, jsonify, request
 
 import logic.config as config
@@ -85,3 +87,45 @@ def mock_backend_metrics():
 
     config.logger().info(f'Mock receive body -> {request.json}')
     return '', 201
+
+
+@blue_print.route('/mocks/metrics', methods=['GET'])
+def mock_metrics():
+
+    metrics = []
+
+    count_metrics = int(request.args.get('count', 10))
+
+    for n in range(0, count_metrics):
+
+        rnd = random.randint(1, 4)
+
+        if rnd == 1:
+            sensor_type = 'temperatura'
+            value = 50 * random.random()
+            unit = 'ºC'
+
+        if rnd == 2:
+            sensor_type = 'humedad'
+            value = 60 * random.random()
+            unit = '% HR'
+
+        if rnd == 3:
+            sensor_type = 'calidad_del_aire'
+            value = 90 * random.random()
+            unit = 'PPM CO2'
+
+        if rnd == 4:
+            sensor_type = 'produccion'
+            value = int(random.randint(0, 3))
+            unit = 'bool'
+
+        m = Metric(
+            mac="02:42:21:1f:e8:16-1",
+            sensor_type=sensor_type,
+            value=value,
+            unit=unit
+        )
+        service.add_metric(m)
+
+    return '', 200

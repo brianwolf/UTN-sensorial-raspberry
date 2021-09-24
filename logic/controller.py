@@ -101,27 +101,31 @@ def mock_metrics():
         rnd = random.randint(1, 4)
 
         if rnd == 1:
+            mac='02:42:21:1f:e8:16-1'
             sensor_type = 'temperatura'
             value = 50 * random.random()
             unit = 'ºC'
 
         if rnd == 2:
+            mac='02:42:21:1f:e8:16-2'
             sensor_type = 'humedad'
             value = 60 * random.random()
             unit = '% HR'
 
         if rnd == 3:
+            mac='02:42:21:1f:e8:16-3'
             sensor_type = 'calidad_del_aire'
             value = 90 * random.random()
             unit = 'PPM CO2'
 
         if rnd == 4:
+            mac='02:42:21:1f:e8:16-4'
             sensor_type = 'produccion'
             value = int(random.randint(0, 3))
             unit = 'bool'
 
         m = Metric(
-            mac="02:42:21:1f:e8:16-1",
+            mac=mac,
             sensor_type=sensor_type,
             value=value,
             unit=unit

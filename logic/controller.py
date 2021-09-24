@@ -1,6 +1,6 @@
 import random
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request
 
 import logic.config as config
@@ -137,4 +137,4 @@ def mock_metrics():
     return '', 200
 
 def _random_date():
-    return datetime.now() + ( datetime.timedelta(minutes=10 * random.random()) * (-1)**int(random.randint(1, 2)) )
+    return datetime.now() + ( timedelta(minutes=10 * random.random()) * (-1)**int(random.randint(1, 2)) )

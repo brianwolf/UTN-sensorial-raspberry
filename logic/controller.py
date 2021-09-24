@@ -1,5 +1,6 @@
 import random
 
+from datetime import datetime
 from flask import Blueprint, jsonify, request
 
 import logic.config as config
@@ -128,8 +129,12 @@ def mock_metrics():
             mac=mac,
             sensor_type=sensor_type,
             value=value,
-            unit=unit
+            unit=unit,
+            creation_date = _random_date()
         )
         service.add_metric(m)
 
     return '', 200
+
+def _random_date():
+    return datetime.now() + ( datetime.timedelta(minutes=10 * random.random()) * (-1)**int(random.randint(1, 2)) )

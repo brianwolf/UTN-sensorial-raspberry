@@ -104,13 +104,13 @@ def mock_metrics():
         if rnd == 1:
             mac='02:42:21:1f:e8:16-1'
             sensor_type = 'temperatura'
-            value = 50 * random.random()
+            value = int(random.randint(20, 50))
             unit = 'ºC'
 
         if rnd == 2:
             mac='02:42:21:1f:e8:16-2'
             sensor_type = 'humedad'
-            value = 60 * random.random()
+            value = random.randint(20, 80)
             unit = '% HR'
 
         if rnd == 3:

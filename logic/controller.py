@@ -95,7 +95,7 @@ def mock_metrics():
 
     count = int(request.args.get('count', 3))
     date_init = request.args.get('date_init')
-    date_final = request.args.get('date_init')
+    date_final = request.args.get('date_final')
     time_delta = request.args.get('time_delta')
 
     if date_init:

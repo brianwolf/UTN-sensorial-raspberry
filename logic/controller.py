@@ -1,6 +1,6 @@
 import random
-
 from datetime import datetime, timedelta
+
 from flask import Blueprint, jsonify, request
 
 import logic.config as config
@@ -93,48 +93,26 @@ def mock_backend_metrics():
 @blue_print.route('/mocks/metrics', methods=['GET'])
 def mock_metrics():
 
-    metrics = []
+    count = int(request.args.get('count', 3))
+    date_init = request.args.get('date_init')
+    date_final = request.args.get('date_final')
+    time_delta = request.args.get('time_delta')
 
-    count_metrics = int(request.args.get('count', 10))
+    if date_init:
+        date_init = datetime.fromisoformat(date_init)
 
-    for n in range(0, count_metrics):
+    if date_final:
+        date_final = datetime.fromisoformat(date_final)
 
-        rnd = random.randint(1, 4)
+    if time_delta == 'minutes':
+        time_delta = 60
 
-        if rnd == 1:
-            mac='02:42:21:1f:e8:16-1'
-            sensor_type = 'temperatura'
-            value = int(random.randint(20, 50))
-            unit = 'ºC'
+    if time_delta == 'hours':
+        time_delta = 60 ** 2
 
-        if rnd == 2:
-            mac='02:42:21:1f:e8:16-2'
-            sensor_type = 'humedad'
-            value = random.randint(20, 80)
-            unit = '% HR'
+    if time_delta == 'days':
+        time_delta = 24 * 60 ** 2
 
-        if rnd == 3:
-            mac='02:42:21:1f:e8:16-3'
-            sensor_type = 'calidad_del_aire'
-            value = 90 * random.random()
-            unit = 'PPM CO2'
-
-        if rnd == 4:
-            mac='02:42:21:1f:e8:16-4'
-            sensor_type = 'produccion'
-            value = int(random.randint(0, 3))
-            unit = 'bool'
-
-        m = Metric(
-            mac=mac,
-            sensor_type=sensor_type,
-            value=value,
-            unit=unit,
-            creation_date = _random_date()
-        )
-        service.add_metric(m)
+    service.metrics_hard(count, date_init, date_final, time_delta)
 
     return '', 200
-
-def _random_date():
-    return datetime.now() + ( timedelta(minutes=10 * random.random()) * (-1)**int(random.randint(1, 2)) )

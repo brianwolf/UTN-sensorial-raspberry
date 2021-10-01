@@ -58,7 +58,7 @@ def send_db_metrics_to_backend() -> int:
 
     ms = get_metrics(int(get(Vars.SEND_BACKEND_MAX_METRICS)))
     if not ms:
-        config.logger().info('There are no metrics to send')
+        config.logger().debug('There are no metrics to send')
         return 0
 
     tries = 0
@@ -138,12 +138,13 @@ def metrics_hard(count: int, date_init: datetime, date_final: datetime, time_del
         }
     }
 
-    for sensor_type, conf in sensor_types.items():
-        
-        base_creation_date = random_date(date_init, date_final, time_delta)
-        
-        for mac in conf.get('macs'):
-            for n in range(0, count):
+    for n in range(0, count):
+
+        for sensor_type, conf in sensor_types.items():
+
+            base_creation_date = random_date(date_init, date_final, time_delta)
+
+            for mac in conf.get('macs'):
 
                 value = random_value(sensor_type)
                 creation_date = base_creation_date.replace(microsecond=datetime.now().microsecond) 

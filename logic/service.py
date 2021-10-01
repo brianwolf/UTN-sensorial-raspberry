@@ -139,12 +139,14 @@ def metrics_hard(count: int, date_init: datetime, date_final: datetime, time_del
     }
 
     for sensor_type, conf in sensor_types.items():
+        
+        creation_date = random_date(date_init, date_final, time_delta)
+        
         for mac in conf.get('macs'):
             for n in range(0, count):
 
                 value = random_value(sensor_type)
-                creation_date = random_date(date_init, date_final, time_delta)
-
+                
                 m = Metric(
                     mac=mac,
                     sensor_type=sensor_type,

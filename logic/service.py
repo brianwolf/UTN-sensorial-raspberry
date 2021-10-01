@@ -146,8 +146,7 @@ def metrics_hard(count: int, date_init: datetime, date_final: datetime, time_del
             for n in range(0, count):
 
                 value = random_value(sensor_type)
-                creation_date = base_creation_date
-                creation_date.milliseconds = datetime.now().milliseconds
+                creation_date = base_creation_date.replace(microsecond=datetime.now().microsecond) 
 
                 m = Metric(
                     mac=mac,
